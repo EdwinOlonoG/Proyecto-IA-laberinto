@@ -1,0 +1,146 @@
+<div class="container">
+    <div class="header">
+      <h1>Project</h1>
+    </div>
+    <div *ngIf="!file" class="custom-input-file col-md-6 col-sm-6 col-xs-6">
+      <input type="file" id="fichero-tarifas" class="input-file" (change)="loadFile($event)" >
+      Subir Archivo...
+    </div>
+    <button *ngIf="file" (click)="solve()">Solve A*</button>
+      <div class="lab-container">
+          <div *ngFor="let fragment of map">
+              <button class="fragment"
+                  [ngClass]="{'road': (fragment.terrain == 1),
+                              'wall': (fragment.terrain == 0),
+                              'water': (fragment.terrain == 2),
+                              'sand': (fragment.terrain == 3),
+                              'forest': (fragment.terrain == 4),
+                              'visited': (fragment.visited),
+                              'desicion': (fragment.needsDesicion)
+                             }
+                               ">
+                <p *ngIf="fragment.isHuman">H</p>
+                <p *ngIf="fragment.isOctopus">O</p>
+                <p *ngIf="fragment.isKey">K</p>
+                <p *ngIf="fragment.isTemple">T</p>
+                <p *ngIf="fragment.isPortal">P</p>
+                <p *ngIf="fragment.visited">V</p>
+                <!-- <p *ngIf="fragment.needsDesicion">O</p> -->
+              </button>
+          </div>
+      </div>
+      <div class="menu">
+        <table>
+            <tr>
+                <td>Terrain</td>
+                <td>Human</td>
+                <td>Octopus</td>
+            </tr>
+            <tr>
+                <td class="mountain">mountain</td>
+                <td><input [(ngModel)]="humanCost['0']"></td>
+                <td><input [(ngModel)]="octopusCost['0']"></td>
+              </tr>
+              <tr>
+                <td class="road">earth</td>
+                <td><input [(ngModel)]="humanCost['1']"></td>
+                <td><input [(ngModel)]="octopusCost['1']"></td>
+              </tr>
+              <tr>
+                <td class="water">water</td>
+                <td><input [(ngModel)]="humanCost['2']" ></td>
+                <td><input [(ngModel)]="octopusCost['2']"></td>
+              </tr>
+              <tr>
+                <td class="sand">sand</td>
+                <td><input [(ngModel)]="humanCost['3']"></td>
+                <td><input [(ngModel)]="octopusCost['3']"></td>
+              </tr>
+              <tr>
+                <td class="forest">forest</td>
+                <td><input [(ngModel)]="humanCost['4']"></td>
+                <td><input [(ngModel)]="octopusCost['4']"></td>
+              </tr>
+        </table>
+        <table>
+            <tr>
+                <td></td>
+                <td>Col</td>
+                <td>Row</td>
+            </tr>
+            <tr>
+                <td>Human</td>
+                <td><input [(ngModel)]="humanStart.col"></td>
+                <td><input [(ngModel)]="humanStart.row"></td>
+            </tr>
+            <tr>
+                <td>Octopus</td>
+                <td><input [(ngModel)]="octopusStart.col"></td>
+                <td><input [(ngModel)]="octopusStart.row"></td>
+            </tr>
+            <tr>
+                <td>Key</td>
+                <td><input [(ngModel)]="key.col"></td>
+                <td><input [(ngModel)]="key.row"></td>
+            </tr>
+            <tr>
+                <td>Dark temple</td>
+                <td><input [(ngModel)]="darkTemple.col"></td>
+                <td><input [(ngModel)]="darkTemple.row"></td>
+            </tr>
+            <tr>
+                <td>Portal</td>
+                <td><input [(ngModel)]="portal.col"></td>
+                <td><input [(ngModel)]="portal.row"></td>
+            </tr>
+        </table>
+        <h5>Human path:</h5>
+        <ul>
+          <li *ngFor="let parent of solutionHuman.parents">{{alphabeth[parent.col]}}{{parent.row + 1}} | {{parent.total}}</li>
+          <li>{{alphabeth[solutionHuman.col]}} {{solutionHuman.row}} | {{solutionHuman.total}}</li>
+        </ul>
+        <h5>Octopus path</h5>
+        <ul>
+          <li *ngFor="let parent of solutionOctopus.parents">{{alphabeth[parent.col]}}{{parent.row + 1}} | {{parent.total}}</li>
+          <li>{{alphabeth[solutionOctopus.col]}} {{solutionOctopus.row + 1}} | {{solutionOctopus.total}}</li>
+        </ul>
+      </div>
+      <table>
+        <tr>
+          <td>Route</td>
+          <td>Human Path</td>
+          <td>Octopus Path</td>
+          <td>Human cost</td>
+          <td>Octopus cost</td>
+          <td>Total cost</td>
+        </tr>
+        <tr *ngFor="let node of openSet">
+          <td>
+            {{node.route}}
+          </td>
+          <td>
+            <ul>
+              <li *ngFor="let path of node.human.parents">
+                {{alphabeth[path.col]}}{{path.row -1}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li *ngFor="let path of node.octopus.parents">
+                {{alphabeth[path.col]}}{{path.row -1}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            {{node.human.total}}
+          </td>
+          <td>
+            {{node.octopus.total}}
+          </td>
+          <td>
+            {{node.total}}
+          </td>
+        </tr>
+      </table>
+</div>
